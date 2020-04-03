@@ -25,7 +25,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '172.18.0.2',
+]
 
 
 # Application definition
@@ -74,6 +76,7 @@ WSGI_APPLICATION = 'coctails.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# TODO: setup PostgreSQL database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
