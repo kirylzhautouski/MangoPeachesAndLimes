@@ -4,6 +4,8 @@ from coctailsapi.models import Drink, Ingredient
 
 
 class DrinkSerializer(serializers.HyperlinkedModelSerializer):
+    # TODO: add measures
+
     class Meta:
         model = Drink
         fields = ['url', 'id', 'name', 'is_alcoholic', 'image_url', 'instructions']
