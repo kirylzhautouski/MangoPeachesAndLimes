@@ -16,7 +16,6 @@ class Ingredient(models.Model):
 
 class Measure(models.Model):
     drink = models.ForeignKey(Drink, related_name='measures', on_delete=models.CASCADE)
-
     ingredient = models.ForeignKey(Ingredient, related_name='measures', on_delete=models.CASCADE)
     measure = models.CharField(max_length=50, blank=True)
 
