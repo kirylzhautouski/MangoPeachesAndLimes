@@ -4,6 +4,7 @@ from coctailsapi import views
 
 router = DefaultRouter()
 router.register('ingredients', views.IngredientViewSet)
+router.register('drinks', views.DrinkViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
