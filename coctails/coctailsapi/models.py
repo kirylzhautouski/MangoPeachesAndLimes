@@ -19,3 +19,6 @@ class Measure(models.Model):
 
     ingredient = models.ForeignKey(Ingredient, related_name='measures', on_delete=models.CASCADE)
     measure = models.CharField(max_length=50, blank=True)
+
+    class Meta:
+        unique_together = ('drink', 'ingredient',)
