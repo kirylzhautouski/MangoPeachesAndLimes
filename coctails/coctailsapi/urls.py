@@ -7,5 +7,6 @@ router.register('ingredients', views.IngredientViewSet)
 router.register('drinks', views.DrinkViewSet)
 
 urlpatterns = [
+    path('feeling-lucky/', views.RandomDrinkView.as_view(), name='feeling-lucky'),
     path('', include(router.urls)),
 ]
