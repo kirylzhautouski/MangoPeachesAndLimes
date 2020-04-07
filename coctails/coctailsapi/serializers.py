@@ -5,7 +5,7 @@ from coctailsapi.models import Drink, Ingredient, Measure
 
 class MeasureSerializer(serializers.ModelSerializer):
 
-    ingredient = serializers.HyperlinkedRelatedField(view_name='ingredient-detail',
+    ingredient = serializers.HyperlinkedRelatedField(view_name='coctailsapi:ingredient-detail',
                                                      queryset=Ingredient.objects.all())
     ingredient_name = serializers.ReadOnlyField(source='ingredient.name')
 
@@ -15,6 +15,8 @@ class MeasureSerializer(serializers.ModelSerializer):
 
 
 class DrinkSerializer(serializers.HyperlinkedModelSerializer):
+
+    url = serializers.HyperlinkedIdentityField(view_name='coctailsapi:drink-detail')
     measures = MeasureSerializer(many=True)
 
     class Meta:
