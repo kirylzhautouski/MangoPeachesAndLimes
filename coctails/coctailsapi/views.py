@@ -1,5 +1,6 @@
 import random
 
+from django.http import Http404
 from rest_framework import viewsets, generics
 
 from coctailsapi.models import Drink, Ingredient
@@ -21,4 +22,11 @@ class RandomDrinkView(generics.RetrieveAPIView):
     serializer_class = DrinkSerializer
 
     def get_object(self):
-        return random.choice(self.get_queryset())
+        queryset = self.get_queryset()
+
+        if queryset.count() == 0:
+            raise Http404()
+
+        ids = queryset.values_list('id', flat=True)
+        pk = random.choice(ids)
+        return queryset.get(pk=pk)
