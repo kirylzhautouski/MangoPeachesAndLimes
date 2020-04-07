@@ -6,7 +6,9 @@ router = DefaultRouter()
 router.register('ingredients', views.IngredientViewSet)
 router.register('drinks', views.DrinkViewSet)
 
+app_name = 'coctailsapi'
 urlpatterns = [
-    path('feeling-lucky/', views.RandomDrinkView.as_view(), name='feeling-lucky'),
+    path('', views.DocsView.as_view()),
     path('', include(router.urls)),
+    path('feeling-lucky/', views.RandomDrinkView.as_view(), name='feeling-lucky'),
 ]

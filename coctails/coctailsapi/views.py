@@ -1,10 +1,21 @@
 import random
 
 from django.http import Http404
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, views
+from rest_framework.response import Response
 
 from coctailsapi.models import Drink, Ingredient
 from coctailsapi.serializers import DrinkSerializer, IngredientSerializer
+
+
+class DocsView(views.APIView):
+    def get(self, request):
+        apidocs = {
+            'ingredients': request.build_absolute_uri('ingredients/'),
+            'drinks': request.build_absolute_uri('drinks/'),
+            'feeling-lucky': request.build_absolute_uri('feeling-lucky/'),
+        }
+        return Response(apidocs)
 
 
 class DrinkViewSet(viewsets.ReadOnlyModelViewSet):
