@@ -5,7 +5,7 @@ import json
 from asgiref.sync import sync_to_async
 from django.core.management.base import BaseCommand
 
-from coctailsapi.models import Drink
+from coctailsapi.models import Drink, Ingredient, Measure
 
 
 class Command(BaseCommand):
@@ -13,21 +13,42 @@ class Command(BaseCommand):
 
     THECOCTAILDB_URL = 'https://www.thecocktaildb.com/api/json/v1/1/'
 
-    @sync_to_async
-    def __update_db(self, loaded_drinks):
-        for loaded_drink in loaded_drinks:
+    def __update_ingredients(self):
+        self.ingredients_db = {}
+        for ingredient_name, ingredient in self.ingredients.items():
             defaults = {
-                'is_alcoholic': True if loaded_drink['strAlcoholic'] == 'Alcoholic' else False,
-                'image_url': loaded_drink['strDrinkThumb'] if loaded_drink['strDrinkThumb'] else '',
-                'instructions': loaded_drink['strInstructions'] if loaded_drink['strInstructions'] else '',
+                'is_alcoholic': True if ingredient['strAlcohol'] == 'Yes' else False,
+                'description': ingredient['strDescription'] if ingredient['strDescription'] else '',
             }
-            Drink.objects.update_or_create(name=loaded_drink['strDrink'], defaults=defaults)
+            ingredient_db, _ = Ingredient.objects.update_or_create(name=ingredient['strIngredient'], defaults=defaults)
+            self.ingredients_db[ingredient_name] = ingredient_db
 
-            # for i in range(1, 16):
-            #     ingredientKey = 'strIngredient' + str(i)
-            #     ingredient = loaded_drink[ingredientKey]
-            #     if not ingredient:
-            #         break
+    def __update_drinks(self):
+        for drink in self.drinks:
+            defaults = {
+                'is_alcoholic': True if drink['strAlcoholic'] == 'Alcoholic' else False,
+                'image_url': drink['strDrinkThumb'] if drink['strDrinkThumb'] else '',
+                'instructions': drink['strInstructions'] if drink['strInstructions'] else '',
+            }
+            drink_db, _ = Drink.objects.update_or_create(name=drink['strDrink'], defaults=defaults)
+
+            for i in range(1, 16):
+                ingredientKey = 'strIngredient' + str(i)
+                ingredient_name = drink[ingredientKey]
+                if not ingredient_name:
+                    break
+
+                ingredient = self.ingredients_db[ingredient_name]
+                measure = drink['strMeasure' + str(i)] if drink['strMeasure' + str(i)] else ''
+
+                Measure.objects.update_or_create(drink=drink_db, ingredient=ingredient, defaults={
+                    'measure': measure
+                })
+
+    @sync_to_async
+    def __update_db(self):
+        self.__update_ingredients()
+        self.__update_drinks()
 
     async def __load_coctails_for_drink(self, drink, session):
         for i in range(1, 16):
@@ -37,11 +58,11 @@ class Command(BaseCommand):
             if not ingredientName:
                 break
 
-            if ingredientName not in self.cached_inredients:
+            if ingredientName not in self.ingredients:
                 async with session.get(f'{Command.THECOCTAILDB_URL}search.php?i={ingredientName}') \
                         as response:
                     result = json.loads(await response.text())
-                    self.inredients[ingredientName] = result['ingredients'][0]
+                    self.ingredients[ingredientName] = result['ingredients'][0]
 
     async def __load_for_letter(self, letter, session):
         self.stdout.write(f'Started downloading for letter {letter}')
@@ -73,7 +94,7 @@ class Command(BaseCommand):
                 tasks.append(task)
             await asyncio.gather(*tasks, return_exceptions=True)
 
-        # TODO: save everything to the db
+        await self.__update_db()
 
     def handle(self, *args, **kwargs):
         asyncio.get_event_loop().run_until_complete(self.__load_data())
