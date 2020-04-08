@@ -11,6 +11,8 @@ from coctailsapi.models import Drink
 class Command(BaseCommand):
     help = 'Loads and updates data from TheCoctailDB into the local database'
 
+    THECOCTAILDB_URL = 'https://www.thecocktaildb.com/api/json/v1/1/'
+
     @sync_to_async
     def __update_db(self, loaded_drinks):
         for loaded_drink in loaded_drinks:
@@ -21,14 +23,28 @@ class Command(BaseCommand):
             }
             Drink.objects.update_or_create(name=loaded_drink['strDrink'], defaults=defaults)
 
+    async def __load_coctails_for_drink(self, drink, session):
+        for i in range(1, 16):
+            ingredientKey = 'strIngredient' + str(i)
+            ingredientName = drink[ingredientKey]
+            if not ingredientName:
+                break
+            async with session.get(f'{Command.THECOCTAILDB_URL}search.php?i={ingredientName}') \
+                    as response:
+                result = json.loads(await response.text())
+                drink[ingredientKey] = result['ingredients'][0]
+
     async def __load_data(self):
         async with aiohttp.ClientSession() as session:
             for letter in 'abcdefghijklmnopqrstuvwxyz':
-                async with session.get(f'https://www.thecocktaildb.com/api/json/v1/1/search.php?f={letter}') \
+                async with session.get(f'{Command.THECOCTAILDB_URL}search.php?f={letter}') \
                         as response:
                     drinks = json.loads(await response.text())
-                    if drinks['drinks']:
-                        await self.__update_db(drinks['drinks'])
+                    drinks = drinks['drinks']
+                    if drinks:
+                        for drink in drinks:
+                            await self.__load_coctails_for_drink(drink, session)
+                        await self.__update_db(drinks)
 
     def handle(self, *args, **kwargs):
         asyncio.get_event_loop().run_until_complete(self.__load_data())
