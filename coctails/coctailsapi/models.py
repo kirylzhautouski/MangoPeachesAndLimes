@@ -7,6 +7,9 @@ class Drink(models.Model):
     image_url = models.URLField(blank=True)
     instructions = models.TextField(blank=True)
 
+    class Meta:
+        ordering = ('name',)
+
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=100, unique=True)

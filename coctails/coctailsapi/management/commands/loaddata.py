@@ -23,6 +23,12 @@ class Command(BaseCommand):
             }
             Drink.objects.update_or_create(name=loaded_drink['strDrink'], defaults=defaults)
 
+            # for i in range(1, 16):
+            #     ingredientKey = 'strIngredient' + str(i)
+            #     ingredient = loaded_drink[ingredientKey]
+            #     if not ingredient:
+            #         break
+
     async def __load_coctails_for_drink(self, drink, session):
         for i in range(1, 16):
             ingredientKey = 'strIngredient' + str(i)
@@ -35,27 +41,39 @@ class Command(BaseCommand):
                 async with session.get(f'{Command.THECOCTAILDB_URL}search.php?i={ingredientName}') \
                         as response:
                     result = json.loads(await response.text())
-                    ingredient = result['ingredients'][0]
-                    self.cached_inredients[ingredientName] = ingredient
-            else:
-                ingredient = self.cached_inredients[ingredientName]
+                    self.inredients[ingredientName] = result['ingredients'][0]
 
-            drink[ingredientKey] = ingredient
+    async def __load_for_letter(self, letter, session):
+        self.stdout.write(f'Started downloading for letter {letter}')
+
+        async with session.get(f'{Command.THECOCTAILDB_URL}search.php?f={letter}') \
+                as response:
+            loaded_drinks = json.loads(await response.text())
+            loaded_drinks = loaded_drinks['drinks']
+
+            if loaded_drinks:
+                tasks = []
+                for drink in loaded_drinks:
+                    task = asyncio.ensure_future(self.__load_coctails_for_drink(drink, session))
+                    tasks.append(task)
+                await asyncio.gather(*tasks, return_exceptions=True)
+
+                self.drinks.extend(loaded_drinks)
+
+        self.stdout.write(f'Finished downloading for letter {letter}')
 
     async def __load_data(self):
-        self.cached_inredients = {}
+        self.ingredients = {}
+        self.drinks = []
 
         async with aiohttp.ClientSession() as session:
+            tasks = []
             for letter in 'abcdefghijklmnopqrstuvwxyz':
-                async with session.get(f'{Command.THECOCTAILDB_URL}search.php?f={letter}') \
-                        as response:
-                    drinks = json.loads(await response.text())
-                    drinks = drinks['drinks']
+                task = asyncio.ensure_future(self.__load_for_letter(letter, session))
+                tasks.append(task)
+            await asyncio.gather(*tasks, return_exceptions=True)
 
-                    if drinks:
-                        for drink in drinks:
-                            await self.__load_coctails_for_drink(drink, session)
-                        await self.__update_db(drinks)
+        # TODO: save everything to the db
 
     def handle(self, *args, **kwargs):
         asyncio.get_event_loop().run_until_complete(self.__load_data())
