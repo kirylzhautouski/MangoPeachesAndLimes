@@ -27,20 +27,31 @@ class Command(BaseCommand):
         for i in range(1, 16):
             ingredientKey = 'strIngredient' + str(i)
             ingredientName = drink[ingredientKey]
+
             if not ingredientName:
                 break
-            async with session.get(f'{Command.THECOCTAILDB_URL}search.php?i={ingredientName}') \
-                    as response:
-                result = json.loads(await response.text())
-                drink[ingredientKey] = result['ingredients'][0]
+
+            if ingredientName not in self.cached_inredients:
+                async with session.get(f'{Command.THECOCTAILDB_URL}search.php?i={ingredientName}') \
+                        as response:
+                    result = json.loads(await response.text())
+                    ingredient = result['ingredients'][0]
+                    self.cached_inredients[ingredientName] = ingredient
+            else:
+                ingredient = self.cached_inredients[ingredientName]
+
+            drink[ingredientKey] = ingredient
 
     async def __load_data(self):
+        self.cached_inredients = {}
+
         async with aiohttp.ClientSession() as session:
             for letter in 'abcdefghijklmnopqrstuvwxyz':
                 async with session.get(f'{Command.THECOCTAILDB_URL}search.php?f={letter}') \
                         as response:
                     drinks = json.loads(await response.text())
                     drinks = drinks['drinks']
+
                     if drinks:
                         for drink in drinks:
                             await self.__load_coctails_for_drink(drink, session)
