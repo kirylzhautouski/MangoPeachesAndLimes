@@ -5,6 +5,8 @@ services:
         image: postgres
         environment: 
             POSTGRES_HOST_AUTH_METHOD: "trust"
+    redis:
+        image: "redis:alpine"
     web:
         build: .
         command: ./wait-for-it.sh db:5432 -- python coctails/manage.py runserver 0.0.0.0:8000
@@ -16,3 +18,24 @@ services:
             - "8000:8000"
         depends_on: 
             - db
+            - redis
+    celery:
+        build: .
+        command: bash -c "cd coctails; celery -A coctails.celery worker -l info"
+        env_file: 
+            - .env
+        volumes:
+            - .:/code
+        depends_on: 
+            - db
+            - redis
+    celery-beat:
+        build: .
+        command: bash -c "cd coctails; celery -A coctails.celery beat -l info --pidfile="
+        env_file: 
+            - .env
+        volumes:
+            - .:/code
+        depends_on: 
+            - db
+            - redis
