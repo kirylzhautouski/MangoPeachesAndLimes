@@ -31,7 +31,7 @@ services:
             - redis
     celery-beat:
         build: .
-        command: bash -c "cd coctails; celery -A coctails.celery beat -l info"
+        command: bash -c "cd coctails; celery -A coctails.celery beat -l info --pidfile="
         env_file: 
             - .env
         volumes:
