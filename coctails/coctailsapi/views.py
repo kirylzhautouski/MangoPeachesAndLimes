@@ -1,7 +1,7 @@
 import random
 
 from django.http import Http404
-from rest_framework import viewsets, generics, views
+from rest_framework import viewsets, generics, views, filters
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
@@ -20,6 +20,8 @@ class DocsView(views.APIView):
 
 
 class DrinkViewSet(viewsets.ReadOnlyModelViewSet):
+    search_fields = ['name']
+    filter_backends = (filters.SearchFilter, )
     serializer_class = DrinkSerializer
 
     def __filter_by_ingredients(self, queryset):
@@ -52,6 +54,9 @@ class DrinkViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
+    search_fields = ['name']
+    filter_backends = (filters.SearchFilter, )
+
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
 
