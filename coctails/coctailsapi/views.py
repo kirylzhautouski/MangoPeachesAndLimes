@@ -29,10 +29,10 @@ class DrinkViewSet(viewsets.ReadOnlyModelViewSet):
         if ingredients_string:
             ingredients = ingredients_string.split(',')
             for ingredient in ingredients:
-                if not Ingredient.objects.filter(name__iexact=ingredient).first():
-                    raise ValidationError(f'Ingredient with name {ingredient} does not exist.', code=400)
+                if not Ingredient.objects.filter(id=ingredient).first():
+                    raise ValidationError(f'Ingredient with id {ingredient} does not exist.', code=400)
 
-                queryset = queryset.filter(measures__ingredient__name__icontains=ingredient)
+                queryset = queryset.filter(measures__ingredient__id=ingredient)
 
         return queryset
 
