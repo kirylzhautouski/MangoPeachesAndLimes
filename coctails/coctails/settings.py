@@ -80,10 +80,10 @@ WSGI_APPLICATION = 'coctails.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'HOST': os.getenv('DATABASE_HOST'),
+        'PORT': os.getenv('DATABASE_PORT'),
     }
 }
 
@@ -131,8 +131,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
 }
 
-REDIS_HOST = 'redis'
-REDIS_PORT = '6379'
+REDIS_HOST = os.getenv('REDIS_HOST')
+REDIS_PORT = os.getenv('REDIS_PORT')
 
 CELERY_BROKER_URL = f'{REDIS_HOST}://{REDIS_HOST}:{REDIS_PORT}'
 CELERY_RESULT_BACKEND = f'{REDIS_HOST}://{REDIS_HOST}:{REDIS_PORT}'
