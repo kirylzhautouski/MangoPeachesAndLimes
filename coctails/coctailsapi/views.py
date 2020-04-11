@@ -24,33 +24,37 @@ class DrinkViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.SearchFilter, )
     serializer_class = DrinkSerializer
 
-    def __filter_by_ingredients(self, queryset):
-        ingredients_string = self.request.query_params.get('ingredients')
-        if ingredients_string:
-            ingredients = ingredients_string.split(',')
-            for ingredient in ingredients:
-                if not Ingredient.objects.filter(id=ingredient).first():
-                    raise ValidationError(f'Ingredient with id {ingredient} does not exist.', code=400)
+    def __filter_by_ingredients(self, queryset, ingredients):
+        for ingredient in ingredients:
+            if not Ingredient.objects.filter(id=ingredient).first():
+                raise ValidationError(f'Ingredient with id {ingredient} does not exist.', code=400)
 
-                queryset = queryset.filter(measures__ingredient__id=ingredient)
+            queryset = queryset.filter(measures__ingredient__id=ingredient)
 
         return queryset
 
-    def __filter_by_alcoholic(self, queryset):
-        alcoholic_only_filter = self.request.query_params.get('alcoholic')
-        if alcoholic_only_filter is not None:
-            if alcoholic_only_filter == 'True':
-                queryset = queryset.filter(is_alcoholic=True)
-            elif alcoholic_only_filter == 'False':
-                queryset = queryset.filter(is_alcoholic=False)
-            else:
-                raise ValidationError(f'Invalid value for alcoholic filter: {alcoholic_only_filter}')
+    def __filter_by_alcoholic(self, queryset, is_alcoholic):
+        if is_alcoholic == 'True':
+            queryset = queryset.filter(is_alcoholic=True)
+        elif is_alcoholic == 'False':
+            queryset = queryset.filter(is_alcoholic=False)
+        else:
+            raise ValidationError(f'Invalid value for alcoholic filter: {is_alcoholic}')
 
         return queryset
 
     def get_queryset(self):
-        drinks_queryset = self.__filter_by_ingredients(Drink.objects)
-        return self.__filter_by_alcoholic(drinks_queryset).all()
+        drinks_queryset = Drink.objects
+
+        ingredients_string = self.request.query_params.get('ingredients')
+        if ingredients_string:
+            drinks_queryset = self.__filter_by_ingredients(drinks_queryset, ingredients_string.split(','))
+
+        alcoholic_only_filter = self.request.query_params.get('alcoholic')
+        if alcoholic_only_filter is not None:
+            drinks_queryset = self.__filter_by_alcoholic(drinks_queryset, alcoholic_only_filter)
+
+        return drinks_queryset.all()
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
