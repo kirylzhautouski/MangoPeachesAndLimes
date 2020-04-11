@@ -2,6 +2,7 @@ import random
 
 from django.http import Http404
 from rest_framework import viewsets, generics, views, filters
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from coctailsapi.models import Drink, Ingredient
@@ -33,6 +34,16 @@ class DrinkViewSet(viewsets.ReadOnlyModelViewSet):
             drinks_queryset = _filter.filter(self.request, drinks_queryset)
 
         return drinks_queryset.all()
+
+    @action(detail=True)
+    def similar(self, request, pk):
+        # TODO: implement endpoint
+        # 1. on updating database from API also build and update similarity matrix
+        # 2. when `similar` request comes, retrieve n similar drinks
+
+        print(pk)
+
+        return Response({'message': 'not implemented yet'})
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):

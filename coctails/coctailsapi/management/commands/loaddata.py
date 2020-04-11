@@ -6,6 +6,7 @@ from asgiref.sync import sync_to_async
 from django.core.management.base import BaseCommand
 
 from coctailsapi.models import Drink, Ingredient, Measure
+from coctailsapi.helpers.similar_drinks_manager import SimilarDrinksManager
 
 
 class Command(BaseCommand):
@@ -49,6 +50,8 @@ class Command(BaseCommand):
     def __update_db(self):
         self.__update_ingredients()
         self.__update_drinks()
+
+        SimilarDrinksManager.update()
 
     async def __load_coctails_for_drink(self, drink, session):
         for i in range(1, 16):
