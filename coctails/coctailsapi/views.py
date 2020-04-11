@@ -2,11 +2,11 @@ import random
 
 from django.http import Http404
 from rest_framework import viewsets, generics, views, filters
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from coctailsapi.models import Drink, Ingredient
 from coctailsapi.serializers import DrinkSerializer, IngredientSerializer
+from coctailsapi.helpers.filters import DrinkByAlcoholPresenceFilter, DrinkByIngredientsFilter
 
 
 class DocsView(views.APIView):
@@ -24,35 +24,13 @@ class DrinkViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.SearchFilter, )
     serializer_class = DrinkSerializer
 
-    def __filter_by_ingredients(self, queryset, ingredients):
-        for ingredient in ingredients:
-            if not Ingredient.objects.filter(id=ingredient).first():
-                raise ValidationError(f'Ingredient with id {ingredient} does not exist.', code=400)
-
-            queryset = queryset.filter(measures__ingredient__id=ingredient)
-
-        return queryset
-
-    def __filter_by_alcoholic(self, queryset, is_alcoholic):
-        if is_alcoholic == 'True':
-            queryset = queryset.filter(is_alcoholic=True)
-        elif is_alcoholic == 'False':
-            queryset = queryset.filter(is_alcoholic=False)
-        else:
-            raise ValidationError(f'Invalid value for alcoholic filter: {is_alcoholic}')
-
-        return queryset
+    filters = [DrinkByIngredientsFilter('ingredients'), DrinkByAlcoholPresenceFilter('alcoholic')]
 
     def get_queryset(self):
         drinks_queryset = Drink.objects
 
-        ingredients_string = self.request.query_params.get('ingredients')
-        if ingredients_string:
-            drinks_queryset = self.__filter_by_ingredients(drinks_queryset, ingredients_string.split(','))
-
-        alcoholic_only_filter = self.request.query_params.get('alcoholic')
-        if alcoholic_only_filter is not None:
-            drinks_queryset = self.__filter_by_alcoholic(drinks_queryset, alcoholic_only_filter)
+        for _filter in self.filters:
+            drinks_queryset = _filter.filter(self.request, drinks_queryset)
 
         return drinks_queryset.all()
 
