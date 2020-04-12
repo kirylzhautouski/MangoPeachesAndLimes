@@ -2,11 +2,13 @@ import random
 
 from django.http import Http404
 from rest_framework import viewsets, generics, views, filters
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from coctailsapi.models import Drink, Ingredient
 from coctailsapi.serializers import DrinkSerializer, IngredientSerializer
 from coctailsapi.helpers.filters import DrinkByAlcoholPresenceFilter, DrinkByIngredientsFilter
+from coctailsapi.helpers.similar_drinks_manager import SimilarDrinksManager
 
 
 class DocsView(views.APIView):
@@ -33,6 +35,13 @@ class DrinkViewSet(viewsets.ReadOnlyModelViewSet):
             drinks_queryset = _filter.filter(self.request, drinks_queryset)
 
         return drinks_queryset.all()
+
+    @action(detail=True)
+    def similar(self, request, pk):
+        similar_count = int(request.query_params.get('n')) if request.query_params.get('n') else None
+
+        serializer = self.get_serializer(SimilarDrinksManager.get_similar(pk, similar_count), many=True)
+        return Response(serializer.data)
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
