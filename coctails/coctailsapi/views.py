@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from coctailsapi.models import Drink, Ingredient
 from coctailsapi.serializers import DrinkSerializer, IngredientSerializer
 from coctailsapi.helpers.filters import DrinkByAlcoholPresenceFilter, DrinkByIngredientsFilter
+from coctailsapi.helpers.similar_drinks_manager import SimilarDrinksManager
 
 
 class DocsView(views.APIView):
@@ -37,13 +38,10 @@ class DrinkViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=True)
     def similar(self, request, pk):
-        # TODO: implement endpoint
-        # 1. on updating database from API also build and update similarity matrix
-        # 2. when `similar` request comes, retrieve n similar drinks
+        similar_count = int(request.query_params.get('n')) if request.query_params.get('n') else None
 
-        print(pk)
-
-        return Response({'message': 'not implemented yet'})
+        serializer = self.get_serializer(SimilarDrinksManager.get_similar(pk, similar_count), many=True)
+        return Response(serializer.data)
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):

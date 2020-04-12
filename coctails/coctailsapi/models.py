@@ -10,6 +10,12 @@ class Drink(models.Model):
     class Meta:
         ordering = ('name',)
 
+    def get_ingredient_ids(self):
+        return self.measures.values_list('ingredient', flat=True)
+
+    def count_similar_ingredients(self, other):
+        return self.get_ingredient_ids().intersection(other.get_ingredient_ids()).count()
+
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=100, unique=True)
