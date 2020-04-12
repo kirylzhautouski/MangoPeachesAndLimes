@@ -1,15 +1,11 @@
-import redis
 import pickle
 from collections import defaultdict
 
-from django.conf import settings
-
 from coctailsapi.models import Drink
+from coctailsapi.helpers.storage import Storage
 
 
 class SimilarDrinksManager:
-
-    redis_client = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 
     @staticmethod
     def __build_similarity_dict():
@@ -46,10 +42,9 @@ class SimilarDrinksManager:
         for drink_id, similaritites in similarity_dict.items():
             key = cls.__get_key(drink_id)
             pickled_similaritites = map(lambda x: pickle.dumps(x), similaritites)
-            cls.redis_client.delete(key)
-            cls.redis_client.rpush(key, *pickled_similaritites)
+            Storage.save_similaritites(key, pickled_similaritites)
 
-        cls.redis_client.save()
+        Storage.save_storage()
 
     @classmethod
     def get_similar(cls, drink_id, n=None):
@@ -57,7 +52,7 @@ class SimilarDrinksManager:
             n = 5
 
         key = cls.__get_key(drink_id)
-        pickled_similaritites = cls.redis_client.lrange(key, 0, n - 1)
+        pickled_similaritites = Storage.get_similaritites(key, n)
         similar_drink_ids = list(map(lambda x: pickle.loads(x)[0], pickled_similaritites))
 
         return Drink.objects.filter(id__in=similar_drink_ids)
