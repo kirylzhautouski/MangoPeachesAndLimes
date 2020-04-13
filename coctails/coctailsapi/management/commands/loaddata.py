@@ -34,8 +34,8 @@ class Command(BaseCommand):
             drink_db, _ = Drink.objects.update_or_create(name=drink['strDrink'], defaults=defaults)
 
             for i in range(1, 16):
-                ingredientKey = 'strIngredient' + str(i)
-                ingredient_name = drink[ingredientKey]
+                ingredient_key = 'strIngredient' + str(i)
+                ingredient_name = drink[ingredient_key]
                 if not ingredient_name:
                     break
 

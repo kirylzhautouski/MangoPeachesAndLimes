@@ -7,6 +7,10 @@ services:
             POSTGRES_HOST_AUTH_METHOD: "trust"
     redis:
         image: "redis:alpine"
+        volumes:
+            - ./redis.conf:/usr/local/etc/redis/redis.conf
+        ports:
+            - "6379"
     web:
         build: .
         command: ./wait-for-it.sh db:5432 -- python coctails/manage.py runserver 0.0.0.0:8000
