@@ -1,6 +1,10 @@
+import logging
 import redis
 
 from django.conf import settings
+
+
+logger = logging.getLogger(__name__)
 
 
 class Storage:
@@ -14,7 +18,10 @@ class Storage:
 
     @classmethod
     def save_storage(cls):
-        cls.__redis_client.save()
+        try:
+            cls.__redis_client.save()
+        except redis.exceptions.ResponseError as ex:
+            logger.error(str(ex))
 
     @classmethod
     def get_similaritites(cls, key, n):
