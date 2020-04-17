@@ -5,3 +5,4 @@ psycopg2==2.8.4
 aiohttp==3.6.2
 celery==4.4.2
 redis==3.4.1
+django-cors-headers==3.2.1
