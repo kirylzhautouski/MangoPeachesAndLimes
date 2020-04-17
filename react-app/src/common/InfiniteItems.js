@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import debounce from 'lodash.debounce';
 
 import Deck from './Deck.js';
-import Drink from './Drink.js';
 
 class InfiniteItems extends Component {
 
@@ -14,6 +13,7 @@ class InfiniteItems extends Component {
             hasMore: true,
             isLoading: false,
             items: [],
+            offset: 0,
         };
 
         window.onscroll = debounce(() => {
@@ -39,34 +39,31 @@ class InfiniteItems extends Component {
 
     loadItems() {
         this.setState({ isLoading: true }, async () => {
-            
-            await new Promise(r => setTimeout(r, 2000));
-            const nextItems = [
-                <Drink />,
-                <Drink />,
-                <Drink />,
-                <Drink />,
-                <Drink />,
-                <Drink />,
-                <Drink />,
-                <Drink />,
-            ];
+            const nextItems = await this.props.onLoadItems(this.props.portion, this.state.offset);
 
-            this.setState((state, props) => ({
-                hasMore: true,
-                isLoading: false,
-                items: [
-                    ...state.items,
-                    ...nextItems,
-                ],
-            }));
+            if (nextItems === undefined || nextItems.length === 0) {
+                this.setState((state, props) => ({
+                    hasMore: false,
+                    isLoading: false,
+                }));
+            } else {
+                this.setState((state, props) => ({
+                    hasMore: true,
+                    isLoading: false,
+                    items: [
+                        ...state.items,
+                        ...nextItems,
+                    ],
+                    offset: state.offset + nextItems.length,
+                }));
+            }
         });
     }
 
     render() {
         const decks = [];
         for (let i = 0; i < this.state.items.length; i += 4) {
-            decks.push(<Deck cards={this.state.items.slice(i, i + 4)} />);
+            decks.push(<Deck key={i} cards={this.state.items.slice(i, i + 4)} />);
         }
 
         return (
