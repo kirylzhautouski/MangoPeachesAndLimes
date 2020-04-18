@@ -6,8 +6,8 @@ class CoctailsAPI {
     static _DRINKS_ENDPOINT = '/drinks';
     static _INGREDIENTS_ENDPOINT = '/ingredients';
 
-    async loadDrinks(limit, offset) {
-        let urlString = `${CoctailsAPI._API_URL}${CoctailsAPI._DRINKS_ENDPOINT}/?format=json`;
+    async _loadItems(itemsEndpoint, limit, offset) {
+        let urlString = `${CoctailsAPI._API_URL}${itemsEndpoint}/?format=json`;
         if (limit !== undefined) {
             urlString += `&limit=${limit}`;
         }
@@ -23,21 +23,12 @@ class CoctailsAPI {
         return results;
     }
 
+    async loadDrinks(limit, offset) {
+        return this._loadItems(CoctailsAPI._DRINKS_ENDPOINT, limit, offset);
+    }
+
     async loadIngredients(limit, offset) {
-        let urlString = `${CoctailsAPI._API_URL}${CoctailsAPI._INGREDIENTS_ENDPOINT}/?format=json`;
-        if (limit !== undefined) {
-            urlString += `&limit=${limit}`;
-        }
-        if (offset !== undefined) {
-            urlString += `&offset=${offset}`;
-        }
-
-        const url = new URL(urlString);
-
-        const response = await fetch(url);
-        const { results } = await response.json();
-        
-        return results;
+        return this._loadItems(CoctailsAPI._INGREDIENTS_ENDPOINT, limit, offset);
     }
 
 }
