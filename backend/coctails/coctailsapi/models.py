@@ -22,6 +22,9 @@ class Ingredient(models.Model):
     description = models.TextField(blank=True)
     is_alcoholic = models.BooleanField(default=False)
 
+    def get_image_url(self):
+        return f'https://www.thecocktaildb.com/images/ingredients/{self.name}-Medium.png'
+
 
 class Measure(models.Model):
     drink = models.ForeignKey(Drink, related_name='measures', on_delete=models.CASCADE)
