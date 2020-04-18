@@ -13,8 +13,8 @@ class App extends Component {
 			<Navbar bg="light">
                 <Navbar.Brand href="">Mango, Peaches and Limes</Navbar.Brand>
 				<Nav className="mr-auto">
-					<Nav.Link><NavLink exact to="/">Drinks</NavLink></Nav.Link>
-					<Nav.Link><NavLink to="/ingredients">Ingredients</NavLink></Nav.Link>
+					<NavLink exact to="/" className="nav-link">Drinks</NavLink>
+					<NavLink to="/ingredients" className="nav-link">Ingredients</NavLink>
 				</Nav>
             </Navbar>
 			  <div className="content">

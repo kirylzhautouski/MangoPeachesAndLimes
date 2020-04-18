@@ -1,7 +1,9 @@
 import React from 'react';
-import Drink from '../common/Drink.js';
 
-export default function createDrinksCards(drinks) {
+import Drink from '../common/Drink.js';
+import Ingredient from '../common/Ingredient.js';
+
+export function createDrinksCards(drinks) {
     return drinks.map((value) => {
         const ingredientNames = value.measures.map((measureValue) => measureValue.ingredient_name);
 
@@ -13,4 +15,16 @@ export default function createDrinksCards(drinks) {
                     ingredientNames={ingredientNames} 
                 />
     });
+}
+
+export function createIngredientsCards(ingredients) {
+    return ingredients.map((value) => {
+        return <Ingredient
+                    key={value.id}
+                    name={value.name}
+                    // ingredientImage={value.ingredientImage}
+                    isAlcoholic={value.is_alcoholic}
+                    description={value.description}
+                />
+    })
 }

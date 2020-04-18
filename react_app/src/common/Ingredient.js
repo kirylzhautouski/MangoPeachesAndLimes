@@ -4,6 +4,11 @@ import { Card, Button, Badge } from 'react-bootstrap';
 class Ingredient extends Component {
 
     render() {
+        let descriptionToDisplay = this.props.description.slice(0, 150)
+        if (descriptionToDisplay.length < this.props.description.length) {
+            descriptionToDisplay += '...';
+        }
+
         return (
             <Card style={{ width: '18rem' }}>
                 <Card.Img variant="top" src={this.props.ingredientImage} />
@@ -16,7 +21,7 @@ class Ingredient extends Component {
                         <Badge variant="success">Non Alcoholic</Badge>
                     }
                     <Card.Text>
-                        {this.props.description}
+                        {descriptionToDisplay}
                     </Card.Text>
                     <Button variant="primary">View details</Button>
                 </Card.Body>
@@ -26,4 +31,4 @@ class Ingredient extends Component {
 
 }
 
-export default Drink;
+export default Ingredient;

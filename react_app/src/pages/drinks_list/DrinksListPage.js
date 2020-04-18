@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import InfiniteItems from '../../common/InfiniteItems.js';
 import coctailsAPI from '../../api/CoctailsAPI.js';
-import createDrinkCards from '../../api/mappers.js';
+import { createDrinksCards } from '../../api/mappers.js';
 
 class DrinksListPage extends Component {
 
@@ -10,7 +10,7 @@ class DrinksListPage extends Component {
         return (
             <InfiniteItems
                 portion={20}
-                onLoadItems={async (limit, offset) => createDrinkCards(await coctailsAPI.loadDrinks(limit, offset)) } 
+                onLoadItems={async (limit, offset) => createDrinksCards(await coctailsAPI.loadDrinks(limit, offset)) } 
             />
         );
     }
