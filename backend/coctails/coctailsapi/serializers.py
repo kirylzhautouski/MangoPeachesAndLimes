@@ -27,7 +27,8 @@ class DrinkSerializer(serializers.HyperlinkedModelSerializer):
 class IngredientSerializer(serializers.HyperlinkedModelSerializer):
 
     url = serializers.HyperlinkedIdentityField(view_name='coctailsapi:ingredient-detail')
+    image_url = serializers.URLField(source='get_image_url')
 
     class Meta:
         model = Ingredient
-        fields = ['url', 'id', 'name', 'description', 'is_alcoholic']
+        fields = ['url', 'id', 'name', 'description', 'is_alcoholic', 'image_url']
