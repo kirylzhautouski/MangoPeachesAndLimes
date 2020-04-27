@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Card, Button, Badge } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 class Ingredient extends Component {
 
@@ -23,7 +24,7 @@ class Ingredient extends Component {
                     <Card.Text>
                         {descriptionToDisplay}
                     </Card.Text>
-                    <Button variant="primary">View details</Button>
+                    <Button variant="primary"><Link to={`/ingredients/${this.props.id}`} className="btn btn-primary">View details</Link></Button>
                 </Card.Body>
             </Card>
         );

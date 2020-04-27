@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, Button, Badge } from 'react-bootstrap';
 
 class Drink extends Component {
@@ -18,7 +19,7 @@ class Drink extends Component {
                     <Card.Text>
                         {this.props.ingredientNames.join(', ')}
                     </Card.Text>
-                    <Button variant="primary">View details</Button>
+                    <Button variant="primary"><Link to={`/drinks/${this.props.id}`} className="btn btn-primary">View details</Link></Button>
                 </Card.Body>
             </Card>
         );
