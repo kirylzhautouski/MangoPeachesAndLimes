@@ -19,7 +19,6 @@ class CoctailsAPI {
 
         const response = await fetch(url);
         const { results } = await response.json();
-        console.log(results)
         
         return results;
     }
@@ -30,6 +29,28 @@ class CoctailsAPI {
 
     async loadIngredients(limit, offset) {
         return this._loadItems(CoctailsAPI._INGREDIENTS_ENDPOINT, limit, offset);
+    }
+
+    async _loadItem(itemEndpoint, itemId) {
+        let urlString = `${CoctailsAPI._API_URL}${itemEndpoint}/${itemId}/?format=json`;
+
+        const url = new URL(urlString);
+
+        const response = await fetch(url);
+        if (response.status === 404) {
+            return null;
+        }
+
+        const result = await response.json();
+        return result;
+    }
+
+    async loadDrink(drinkId) {
+        return this._loadItem(CoctailsAPI._DRINKS_ENDPOINT, drinkId);
+    }
+
+    async loadIngredient(ingredientId) {
+        return this._loadItem(CoctailsAPI._INGREDIENTS_ENDPOINT, ingredientId);
     }
 
 }
