@@ -4,7 +4,7 @@ import InfiniteItems from '../../common/InfiniteItems.js';
 import coctailsAPI from '../../api/CoctailsAPI.js';
 import { createIngredientsCards } from '../../api/mappers.js';
 
-class IngredientsListPage extends Component {
+class IngredientsList extends Component {
 
     render() {
         return (
@@ -17,4 +17,4 @@ class IngredientsListPage extends Component {
 
 }
 
-export default IngredientsListPage;
+export default IngredientsList;

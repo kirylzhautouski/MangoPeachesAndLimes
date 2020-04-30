@@ -8,7 +8,8 @@ export function createDrinksCards(drinks) {
         const ingredientNames = value.measures.map((measureValue) => measureValue.ingredient_name);
 
         return <Drink 
-                    key={value.id} 
+                    key={value.id}
+                    id={value.id}
                     name={value.name}
                     drinkImage={value.image_url}
                     isAlcoholic={value.is_alcoholic} 
@@ -24,6 +25,7 @@ export function createIngredientsCards(ingredients) {
 
         return <Ingredient
                     key={value.id}
+                    id={value.id}
                     name={value.name}
                     ingredientImage={value.image_url}
                     isAlcoholic={value.is_alcoholic}

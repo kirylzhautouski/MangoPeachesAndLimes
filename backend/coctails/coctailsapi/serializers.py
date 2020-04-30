@@ -8,10 +8,11 @@ class MeasureSerializer(serializers.ModelSerializer):
     ingredient = serializers.HyperlinkedRelatedField(view_name='coctailsapi:ingredient-detail',
                                                      queryset=Ingredient.objects.all())
     ingredient_name = serializers.ReadOnlyField(source='ingredient.name')
+    ingredient_id = serializers.ReadOnlyField(source='ingredient.id')
 
     class Meta:
         model = Measure
-        fields = ['id', 'ingredient', 'ingredient_name', 'measure']
+        fields = ['id', 'ingredient', 'ingredient_name', 'ingredient_id', 'measure']
 
 
 class DrinkSerializer(serializers.HyperlinkedModelSerializer):
