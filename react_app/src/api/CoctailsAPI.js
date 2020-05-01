@@ -6,13 +6,17 @@ class CoctailsAPI {
     static _DRINKS_ENDPOINT = '/drinks';
     static _INGREDIENTS_ENDPOINT = '/ingredients';
 
-    async _loadItems(itemsEndpoint, limit, offset) {
+    async _loadItems(itemsEndpoint, limit, offset, filters) {
         let urlString = `${CoctailsAPI._API_URL}${itemsEndpoint}/?format=json`;
         if (limit !== undefined) {
             urlString += `&limit=${limit}`;
         }
         if (offset !== undefined) {
             urlString += `&offset=${offset}`;
+        }
+        if (filters !== undefined) {
+            for (const filter in filters)
+            urlString += `&${filter}=${filters[filter]}`;
         }
 
         const url = new URL(urlString);
@@ -25,6 +29,14 @@ class CoctailsAPI {
 
     async loadDrinks(limit, offset) {
         return this._loadItems(CoctailsAPI._DRINKS_ENDPOINT, limit, offset);
+    }
+
+    async loadDrinksWithIngredients(ingredientIds, limit, offset) {
+        const filters = {
+            'ingredients': ingredientIds.join(','),
+        };
+
+        return this._loadItems(CoctailsAPI._DRINKS_ENDPOINT, limit, offset, filters);
     }
 
     async loadIngredients(limit, offset) {

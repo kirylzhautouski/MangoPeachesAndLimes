@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { Badge } from 'react-bootstrap';
  
+import PaginatedCards from '../../common/PaginatedCards.js';
+
 class IngredientDetail extends Component {
 
     render() {
@@ -29,6 +31,10 @@ class IngredientDetail extends Component {
                             </p>
                         </Fragment>
                         }
+                    </div>
+                    <div className='pl-5 pt-2'>
+                        <h5>Drinks with this ingredient:</h5>
+                        <PaginatedCards items={} />
                     </div>
             </Fragment>
 
