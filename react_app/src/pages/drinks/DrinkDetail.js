@@ -62,7 +62,7 @@ class DrinkDetail extends Component {
     render() {
         return (
             <Fragment>
-                <div className='row pl-5 pt-5'>
+                <div className='row pl-5 pt-5' style={{ width: '100%' }}>
                     <div className='col-6'>
                         <h3>{this.props.detailInfo.name}</h3>
                         {this.props.detailInfo.is_alcoholic &&
