@@ -26,8 +26,6 @@ function MeasureList(props) {
 class DrinkDetail extends Component {
 
     render() {
-        console.log(this.props);
-
         return (
             <Fragment>
                 <div className='row pl-5 pt-5'>
