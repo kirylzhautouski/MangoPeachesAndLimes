@@ -6,13 +6,17 @@ class CoctailsAPI {
     static _DRINKS_ENDPOINT = '/drinks';
     static _INGREDIENTS_ENDPOINT = '/ingredients';
 
-    async _loadItems(itemsEndpoint, limit, offset) {
+    async _loadItems(itemsEndpoint, limit, offset, filters) {
         let urlString = `${CoctailsAPI._API_URL}${itemsEndpoint}/?format=json`;
         if (limit !== undefined) {
             urlString += `&limit=${limit}`;
         }
         if (offset !== undefined) {
             urlString += `&offset=${offset}`;
+        }
+        if (filters !== undefined) {
+            for (const filter in filters)
+            urlString += `&${filter}=${filters[filter]}`;
         }
 
         const url = new URL(urlString);
@@ -27,13 +31,20 @@ class CoctailsAPI {
         return this._loadItems(CoctailsAPI._DRINKS_ENDPOINT, limit, offset);
     }
 
+    async loadDrinksWithIngredients(ingredientIds, limit, offset) {
+        const filters = {
+            'ingredients': ingredientIds.join(','),
+        };
+
+        return this._loadItems(CoctailsAPI._DRINKS_ENDPOINT, limit, offset, filters);
+    }
+
     async loadIngredients(limit, offset) {
         return this._loadItems(CoctailsAPI._INGREDIENTS_ENDPOINT, limit, offset);
     }
 
     async _loadItem(itemEndpoint, itemId) {
-        let urlString = `${CoctailsAPI._API_URL}${itemEndpoint}/${itemId}/?format=json`;
-
+        const urlString = `${CoctailsAPI._API_URL}${itemEndpoint}/${itemId}/?format=json`;
         const url = new URL(urlString);
 
         const response = await fetch(url);
@@ -51,6 +62,23 @@ class CoctailsAPI {
 
     async loadIngredient(ingredientId) {
         return this._loadItem(CoctailsAPI._INGREDIENTS_ENDPOINT, ingredientId);
+    }
+
+    async loadSimilarDrinks(similarToId, n) {
+        if (n === undefined) {
+            n = 20;
+        }
+
+        const urlString = `${CoctailsAPI._API_URL}${CoctailsAPI._DRINKS_ENDPOINT}/${similarToId}/similar/?format=json&n=${n}`;
+        const url = new URL(urlString);
+
+        const response = await fetch(url);
+        if (response.status === 404) {
+            return null;
+        }
+
+        const result = await response.json();
+        return result;
     }
 
 }
