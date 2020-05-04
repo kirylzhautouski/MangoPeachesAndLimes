@@ -1,27 +1,38 @@
 import React, { Component } from 'react';
-import { Route, NavLink, BrowserRouter } from 'react-router-dom';
-import { Nav, Navbar } from 'react-bootstrap';
+import { Route, BrowserRouter } from 'react-router-dom';
 
 import Drinks from './pages/drinks/Drinks.js';
 import Ingredients from './pages/ingredients/Ingredients.js';
+import Header from './common/Header.js';
 
 class App extends Component {
+
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			'searchQuery': '',
+		}
+	}
+
+	showSearchResults(searchQuery) {
+		this.setState({
+			'searchQuery': searchQuery,
+		});
+
+		console.log(searchQuery);
+	}
+
 	render() {
 		return (
 		  <BrowserRouter>
-			<div>
-			<Navbar bg="light">
-                <Navbar.Brand href="">Mango, Peaches and Limes</Navbar.Brand>
-				<Nav className="mr-auto">
-					<NavLink to="/drinks" className="nav-link">Drinks</NavLink>
-					<NavLink to="/ingredients" className="nav-link">Ingredients</NavLink>
-				</Nav>
-            </Navbar>
+				<Route path="/" render={(props) => {
+					return <Header {...props} onSearch={(searchQuery) => { this.showSearchResults(searchQuery); }} />
+				}} />
 			  <div className="content">
 				<Route path="/drinks" component={Drinks}/>
 				<Route path="/ingredients" component={Ingredients}/>
 			  </div>
-			</div>
 		  </BrowserRouter>
 		);
 	  }
