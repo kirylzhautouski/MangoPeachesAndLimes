@@ -22,26 +22,34 @@ class Header extends Component {
         this.props.onSearch(this.state.searchQuery);
     }
 
+    emptySearch() {
+        this.setState({
+            'searchQuery': '',
+        }, () => {
+            this.applySearch();
+        });
+    }
+
     render() {
         const listPageMatch = matchPath(this.props.location.pathname, '/drinks') || 
                                 matchPath(this.props.location.pathname, '/ingredients');
 
         return (
-        <Navbar bg="light">
-            <Navbar.Brand href="">Mango, Peaches and Limes</Navbar.Brand>
-            <Nav className="mr-auto">
-                <NavLink to="/drinks" className="nav-link">Drinks</NavLink>
-                <NavLink to="/ingredients" className="nav-link">Ingredients</NavLink>
-            </Nav>
-            {listPageMatch !== null && listPageMatch.isExact &&
-            <Form inline>
-                <FormControl type="text" placeholder="Search" name="search" className="mr-sm-2" onChange={(event) => this.updateSearchQuery(event.target.value) } />
-                <Button variant="outline-success" onClick={() => this.applySearch() }>
-                         Search
-                </Button>
-            </Form>
-            }
-        </Navbar>
+            <Navbar bg="light">
+                <Navbar.Brand href="">Mango, Peaches and Limes</Navbar.Brand>
+                <Nav className="mr-auto">
+                    <NavLink to="/drinks" className="nav-link" onClick={() => this.emptySearch()}>Drinks</NavLink>
+                    <NavLink to="/ingredients" className="nav-link" onClick={() => this.emptySearch()}>Ingredients</NavLink>
+                </Nav>
+                {listPageMatch !== null && listPageMatch.isExact &&
+                <Form inline>
+                    <FormControl type="text" placeholder="Search" value={this.state.searchQuery} name="search" className="mr-sm-2" onChange={(event) => this.updateSearchQuery(event.target.value) } />
+                    <Button variant="outline-success" onClick={() => this.applySearch() }>
+                            Search
+                    </Button>
+                </Form>
+                }
+            </Navbar>
         );
     }
 

@@ -19,8 +19,6 @@ class App extends Component {
 		this.setState({
 			'searchQuery': searchQuery,
 		});
-
-		console.log(searchQuery);
 	}
 
 	render() {
@@ -30,8 +28,8 @@ class App extends Component {
 					return <Header {...props} onSearch={(searchQuery) => { this.showSearchResults(searchQuery); }} />
 				}} />
 			  <div className="content">
-				<Route path="/drinks" component={Drinks}/>
-				<Route path="/ingredients" component={Ingredients}/>
+				<Route path="/drinks" render={(props) => <Drinks {...props} searchQuery={this.state.searchQuery} />} />
+				<Route path="/ingredients" render={(props) => <Ingredients {...props} searchQuery={this.state.searchQuery} />} />
 			  </div>
 		  </BrowserRouter>
 		);
