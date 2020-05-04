@@ -2,8 +2,31 @@ import React, { Component, Fragment } from 'react';
 import { Badge } from 'react-bootstrap';
  
 import PaginatedCards from '../../common/PaginatedCards.js';
+import coctailsAPI from '../../api/CoctailsAPI.js';
+import { createDrinksCards } from '../../api/mappers.js';
 
 class IngredientDetail extends Component {
+
+    constructor(props) {
+        super(props);
+
+        const ingredientId = this.props.detailInfo.id;
+
+        this.state = {
+            'hasResults': false,
+        };
+
+        const loadPromise = new Promise(async (resolve, error) => {
+            resolve(await coctailsAPI.loadDrinksWithIngredients([ingredientId], 20));
+        });
+
+        loadPromise.then((drinks) => {
+            this.setState({
+                'hasResults': true,
+                'drinks': createDrinksCards(drinks),
+            })
+        });
+    }
 
     render() {
         return (
@@ -32,12 +55,13 @@ class IngredientDetail extends Component {
                         </Fragment>
                         }
                     </div>
-                    <div className='pl-5 pt-2'>
+                    {this.state.hasResults &&
+                        <div className='pl-5 pt-2'>
                         <h5>Drinks with this ingredient:</h5>
-                        <PaginatedCards items={} />
+                        <PaginatedCards items={this.state.drinks} />
                     </div>
+                    }
             </Fragment>
-
         );
     }
 

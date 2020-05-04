@@ -6,7 +6,7 @@ class Drink extends Component {
 
     render() {
         return (
-            <Card style={{ width: '18rem' }}>
+            <Card style={{ flex: '0 0 300px' }}>
                 <Card.Img variant="top" src={this.props.drinkImage} />
                 <Card.Body>
                     <Card.Title>{this.props.name}</Card.Title>
