@@ -45,8 +45,8 @@ class CoctailsAPI {
         return this._loadItems(CoctailsAPI._DRINKS_ENDPOINT, limit, offset, filters);
     }
 
-    async loadIngredients(limit, offset) {
-        return this._loadItems(CoctailsAPI._INGREDIENTS_ENDPOINT, limit, offset);
+    async loadIngredients(limit, offset, searchQuery) {
+        return this._loadItems(CoctailsAPI._INGREDIENTS_ENDPOINT, limit, offset, undefined, searchQuery);
     }
 
     async _loadItem(itemEndpoint, itemId) {
