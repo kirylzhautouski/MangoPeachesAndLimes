@@ -5,7 +5,7 @@ class Deck extends Component {
 
     render() {
         return (
-            <CardDeck style={{ width: '80%', margin: 'auto', marginTop: '30px' }} >
+            <CardDeck style={{ width: '80%', margin: 'auto', marginTop: '30px', justifyContent: 'center' }} >
                 {this.props.cards}
             </CardDeck>
         );

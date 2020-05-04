@@ -11,7 +11,7 @@ class Ingredient extends Component {
         }
 
         return (
-            <Card style={{ width: '18rem' }}>
+            <Card style={{ flex: '0 0 300px' }}>
                 <Card.Img variant="top" src={this.props.ingredientImage} />
                 <Card.Body>
                     <Card.Title>{this.props.name}</Card.Title>
