@@ -17,7 +17,7 @@ class Drinks extends Component {
 
         return (
             <Switch>
-                <Route exact path='/drinks' component={DrinksList} />
+                <Route exact path='/drinks' render={ (props) => <DrinksList {...props} searchQuery={this.props.searchQuery} />} />
                 <Route path='/drinks/:id'  render={(props) => {
                     return <DetailLoader {...routeProps} {...props} />
                 }} />

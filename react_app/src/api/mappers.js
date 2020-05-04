@@ -19,10 +19,7 @@ export function createDrinksCards(drinks) {
 }
 
 export function createIngredientsCards(ingredients) {
-    console.log(ingredients);
     return ingredients.map((value) => {
-        console.log(value.image_url)
-
         return <Ingredient
                     key={value.id}
                     id={value.id}

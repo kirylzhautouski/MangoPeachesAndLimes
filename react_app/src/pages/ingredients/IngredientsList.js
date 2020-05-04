@@ -10,7 +10,8 @@ class IngredientsList extends Component {
         return (
             <InfiniteItems
                 portion={20}
-                onLoadItems={async (limit, offset) => createIngredientsCards(await coctailsAPI.loadIngredients(limit, offset)) } 
+                searchQuery={this.props.searchQuery}
+                onLoadItems={async (limit, offset) => createIngredientsCards(await coctailsAPI.loadIngredients(limit, offset, this.props.searchQuery)) } 
             />
         );
     }

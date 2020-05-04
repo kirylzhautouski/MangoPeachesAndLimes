@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import IngredientsList from './IngredientsList.js';
 import IngredientDetail from './IngredientDetail.js';
-import DetailLoader  from '../../common/DetailLoader.js';
+import DetailLoader from '../../common/DetailLoader.js';
 
 import coctailsAPI from '../../api/CoctailsAPI.js';
 
@@ -17,7 +17,7 @@ class Ingredients extends Component {
 
         return (
             <Switch>
-                <Route exact path='/ingredients' component={IngredientsList} />
+                <Route exact path='/ingredients' render={ (props) => <IngredientsList {...props} searchQuery={this.props.searchQuery} />} />
                 <Route path='/ingredients/:id' render={(props) => {
                     return <DetailLoader {...routeProps} {...props} />
                 }} /> />

@@ -37,6 +37,19 @@ class InfiniteItems extends Component {
         this.loadItems();
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.searchQuery !== prevProps.searchQuery) {
+            this.setState({
+                error: false,
+                hasMore: true,
+                isLoading: false,
+                items: [],
+                offset: 0,
+            })
+            this.loadItems();
+        }
+    }
+
     loadItems() {
         this.setState({ isLoading: true }, async () => {
             const nextItems = await this.props.onLoadItems(this.props.portion, this.state.offset);
