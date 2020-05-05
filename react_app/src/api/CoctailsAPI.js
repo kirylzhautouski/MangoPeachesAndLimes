@@ -33,8 +33,22 @@ class CoctailsAPI {
         return results;
     }
 
-    async loadDrinks(limit, offset, searchQuery) {
-        return this._loadItems(CoctailsAPI._DRINKS_ENDPOINT, limit, offset, undefined, searchQuery);
+    async loadDrinks(limit, offset, searchQuery, ingredientIds, showAlcoholic, showNonAlcoholic) {
+        const filters = {}
+
+        if (ingredientIds !== undefined) {
+            filters.ingredients = ingredientIds.join(',');
+        }
+
+        if (!(showAlcoholic && showNonAlcoholic)) {
+            if (showAlcoholic) {
+                filters.alcoholic = 'True';
+            } else if (showNonAlcoholic) {
+                filters.alcoholic = 'False';
+            }
+        }
+
+        return this._loadItems(CoctailsAPI._DRINKS_ENDPOINT, limit, offset, filters, searchQuery);
     }
 
     async loadDrinksWithIngredients(ingredientIds, limit, offset) {

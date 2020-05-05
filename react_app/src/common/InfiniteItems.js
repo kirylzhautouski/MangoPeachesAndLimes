@@ -38,14 +38,17 @@ class InfiniteItems extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.searchQuery !== prevProps.searchQuery) {
+        if (this.props.searchQuery !== prevProps.searchQuery ||
+                this.props.showAlcoholic !== prevProps.showAlcoholic ||
+                this.props.showNonAlcoholic !== prevProps.showNonAlcoholic ||
+                this.props.ingredients !== prevProps.ingredients) {
             this.setState({
                 error: false,
                 hasMore: true,
                 isLoading: false,
                 items: [],
                 offset: 0,
-            })
+            });
             this.loadItems();
         }
     }
