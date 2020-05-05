@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import { Accordion, Card, Button, Form } from 'react-bootstrap';
 
+import SearchHints from '../../common/SearchHints.js';
+import coctailsAPI from '../../api/CoctailsAPI.js';
+
 class DrinksFilters extends Component {
+    constructor(props) {
+        super(props);
+
+        this.hintsLoader = coctailsAPI.loadIngredients.bind(coctailsAPI, 5, 0);
+    }
+
     handleChange(event) {
         const filterName = event.target.id;
 
@@ -28,6 +37,7 @@ class DrinksFilters extends Component {
                                     <Form.Check type="checkbox" defaultChecked={this.props.showNonAlcoholic} label="Show non alcoholic" onChange={(event) => this.handleChange(event)} />
                                 </Form.Group>
                             </Form>
+                            <SearchHints loader={this.hintsLoader} />
                         </Card.Body>
                     </Accordion.Collapse>
                 </Card>

@@ -24,8 +24,6 @@ class DrinksList extends Component {
     }
 
     render() {
-        console.log(this.state);
-
         return (
             <Fragment>
                 <DrinksFilters 
