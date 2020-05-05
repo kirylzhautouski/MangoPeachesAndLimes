@@ -24,6 +24,8 @@ class DrinksList extends Component {
     }
 
     render() {
+        const ingredientIds = this.state.ingredients.map((ingredient) => ingredient.id);
+
         return (
             <Fragment>
                 <DrinksFilters 
@@ -39,7 +41,7 @@ class DrinksList extends Component {
                     showAlcoholic={this.state.showAlcoholic}
                     showNonAlcoholic={this.state.showNonAlcoholic}
                     ingredients={this.state.ingredients}
-                    onLoadItems={async (limit, offset) => createDrinksCards(await coctailsAPI.loadDrinks(limit, offset, this.props.searchQuery, this.state.ingredients, this.state.showAlcoholic, this.state.showNonAlcoholic)) } 
+                    onLoadItems={async (limit, offset) => createDrinksCards(await coctailsAPI.loadDrinks(limit, offset, this.props.searchQuery, ingredientIds, this.state.showAlcoholic, this.state.showNonAlcoholic)) } 
                 />
             </Fragment>
         );

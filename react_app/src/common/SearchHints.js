@@ -37,9 +37,23 @@ class SearchHints extends Component {
         });
     }
 
+    addElement(event) {
+        const element = {
+            id: event.target.id,
+            name: event.target.name,
+        }
+
+        this.props.onAddElement(element);
+    }
+
+    removeElement(event) {
+        const elementId = event.target.id;
+        this.props.onRemoveElement(elementId); 
+    }
+
     createHintElements(hints) {
         return hints.map((hint) => {
-            return <ListGroup.Item key={hint.id}>{hint.name} <Button variant="primary">Add</Button></ListGroup.Item>
+            return <ListGroup.Item key={hint.id}>{hint.name} <Button variant="primary" id={hint.id} name={hint.name} onClick={(event) => this.addElement(event)}>Add</Button></ListGroup.Item>
         });
     }
 

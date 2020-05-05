@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Accordion, Card, Button, Form } from 'react-bootstrap';
 
 import SearchHints from '../../common/SearchHints.js';
+import Chip from '../../common/Chip.js';
 import coctailsAPI from '../../api/CoctailsAPI.js';
 
 class DrinksFilters extends Component {
@@ -17,7 +18,32 @@ class DrinksFilters extends Component {
         this.props.onFiltersChange(filterName, event.target.checked);
     }
 
+    addIngredientFilter(ingredient) {
+        const newIngredients = this.props.ingredients.slice();
+
+        const index = newIngredients.findIndex((ingredient_) => ingredient_.id === ingredient.id);
+        if (index === -1) {
+            newIngredients.push(ingredient);
+            this.props.onFiltersChange('ingredients', newIngredients);
+        }
+    }
+
+    removeIngredientFilter(ingredientId) {
+        const newIngredients = this.props.ingredients.slice();
+        
+        const index = newIngredients.findIndex((ingredient) => ingredient.id === ingredientId);
+        if (index > -1) {
+            newIngredients.splice(index, 1);
+            this.props.onFiltersChange('ingredients', newIngredients);
+        }
+    }
+
     render() {
+        const ingredientChips = this.props.ingredients.map((ingredient) => {
+            console.log(ingredient);
+            return <Chip text={ingredient.name} key={ingredient.id} onDeleteItem={() => this.removeIngredientFilter(ingredient.id)} />;
+        });
+
         return (
             <Accordion>
                 <Card>
@@ -37,7 +63,12 @@ class DrinksFilters extends Component {
                                     <Form.Check type="checkbox" defaultChecked={this.props.showNonAlcoholic} label="Show non alcoholic" onChange={(event) => this.handleChange(event)} />
                                 </Form.Group>
                             </Form>
-                            <SearchHints loader={this.hintsLoader} />
+                            {ingredientChips}
+                            <SearchHints 
+                                loader={this.hintsLoader} 
+                                onAddElement={(ingredientId) => this.addIngredientFilter(ingredientId)}
+                                onRemoveElement={(ingredientId) => this.removeIngredientFilter(ingredientId)}
+                            />
                         </Card.Body>
                     </Accordion.Collapse>
                 </Card>

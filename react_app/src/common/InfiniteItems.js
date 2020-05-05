@@ -48,7 +48,7 @@ class InfiniteItems extends Component {
                 isLoading: false,
                 items: [],
                 offset: 0,
-            })
+            });
             this.loadItems();
         }
     }
