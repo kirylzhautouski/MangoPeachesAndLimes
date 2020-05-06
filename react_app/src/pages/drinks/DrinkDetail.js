@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, useEffect } from 'react';
 import { Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
@@ -32,6 +32,24 @@ class DrinkDetail extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            'hasResults': false,
+        };
+    }
+
+    componentDidMount() {
+        this._loadSimilarDrinks();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.detailInfo.id !== prevProps.detailInfo.id) {
+            this._loadSimilarDrinks();
+
+            window.scrollTo(0, 0)
+        }
+    }
+
+    _loadSimilarDrinks() {
         const loadPromise = new Promise(async (resolve, error) => {
             const similarDrinks = await coctailsAPI.loadSimilarDrinks(this.props.detailInfo.id);
             if (similarDrinks) {
@@ -41,13 +59,7 @@ class DrinkDetail extends Component {
             }
         });
 
-        this.state = {
-            'hasResults': false,
-        };
-
         loadPromise.then((similarDrinks) => {
-
-
             this.setState({
                 'similarDrinkCards': createDrinksCards(similarDrinks),
                 'hasResults': true,

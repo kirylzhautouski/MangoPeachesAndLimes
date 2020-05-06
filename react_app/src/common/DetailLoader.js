@@ -9,6 +9,10 @@ class DetailLoader extends Component {
             'hasResult': false,
         }
 
+
+    }
+
+    _loadDetail() {
         const loadPromise = new Promise(async (resolve, error) => {
             const detailInfo = await this.props.loader(this.props.match.params.id);
             if (detailInfo === null) {
@@ -28,6 +32,16 @@ class DetailLoader extends Component {
                 'hasResult': false,
             })
         });
+    }
+
+    componentDidMount() {
+        this._loadDetail();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.match.params.id !== prevProps.match.params.id) {
+            this._loadDetail();
+        }
     }
 
     render() {
