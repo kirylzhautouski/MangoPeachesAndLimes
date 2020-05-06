@@ -40,6 +40,7 @@ class Header extends Component {
                 <Nav className="mr-auto">
                     <NavLink to="/drinks" className="nav-link" onClick={() => this.emptySearch()}>Drinks</NavLink>
                     <NavLink to="/ingredients" className="nav-link" onClick={() => this.emptySearch()}>Ingredients</NavLink>
+                    <NavLink to="/pour-me" className="nav-link">Pour me!</NavLink>
                 </Nav>
                 {listPageMatch !== null && listPageMatch.isExact &&
                 <Form inline>

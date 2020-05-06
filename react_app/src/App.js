@@ -3,6 +3,7 @@ import { Route, BrowserRouter } from 'react-router-dom';
 
 import Drinks from './pages/drinks/Drinks.js';
 import Ingredients from './pages/ingredients/Ingredients.js';
+import RandomDrink from './pages/RandomDrink.js';
 import Header from './common/Header.js';
 
 class App extends Component {
@@ -30,10 +31,11 @@ class App extends Component {
 			  <div className="content">
 				<Route path="/drinks" render={(props) => <Drinks {...props} searchQuery={this.state.searchQuery} />} />
 				<Route path="/ingredients" render={(props) => <Ingredients {...props} searchQuery={this.state.searchQuery} />} />
+				<Route path="/pour-me" component={RandomDrink} />
 			  </div>
 		  </BrowserRouter>
 		);
-	  }
+	}
 }
 
 export default App;
